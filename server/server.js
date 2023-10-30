@@ -4,8 +4,8 @@ const http = require('http');
 const io = require('socket.io');
 const cors = require('cors');
 
-const FETCH_INTERVAL = 5000;
 const PORT = process.env.PORT || 4000;
+const FETCH_INTERVAL = 5000;
 
 const tickers = [
   'AAPL', // Apple
@@ -27,7 +27,6 @@ function utcDate() {
 }
 
 function getQuotes(socket) {
-
   const quotes = tickers.map(ticker => ({
     ticker,
     exchange: 'NASDAQ',
@@ -42,18 +41,25 @@ function getQuotes(socket) {
   socket.emit('ticker', quotes);
 }
 
-function trackTickers(socket) {
-  // run the first time immediately
-  getQuotes(socket);
+const clientTimers = {};
 
-  // every N seconds
-  const timer = setInterval(function() {
+function trackTickers(socket, interval) {
+  if (clientTimers[socket.id]) {
+    clearInterval(clientTimers[socket.id]);
+  }
+
+  clientTimers[socket.id] = setInterval(function() {
     getQuotes(socket);
-  }, FETCH_INTERVAL);
+  }, interval);
 
   socket.on('disconnect', function() {
-    clearInterval(timer);
+    if (clientTimers[socket.id]) {
+      clearInterval(clientTimers[socket.id]);
+      delete clientTimers[socket.id];
+    }
   });
+
+  getQuotes(socket);
 }
 
 const app = express();
@@ -72,7 +78,11 @@ app.get('/', function(req, res) {
 
 socketServer.on('connection', (socket) => {
   socket.on('start', () => {
-    trackTickers(socket);
+    trackTickers(socket, FETCH_INTERVAL);
+  });
+
+  socket.on('changeInterval', (newInterval) => {
+    trackTickers(socket, newInterval);
   });
 });
 
