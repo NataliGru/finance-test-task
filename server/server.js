@@ -5,38 +5,57 @@ const io = require('socket.io');
 const cors = require('cors');
 
 const PORT = process.env.PORT || 4000;
-const FETCH_INTERVAL = 5000;
+
+const DEFAULT_FETCH_INTERVAL = 5000;
+const PRICE_CHANGE_RANGE = 20;
 
 const tickers = [
-  'AAPL', // Apple
-  'GOOGL', // Alphabet
-  'MSFT', // Microsoft
-  'AMZN', // Amazon
-  'FB', // Facebook
-  'TSLA', // Tesla
+  { ticker: 'AAPL', name: 'Apple' },
+  { ticker: 'GOOGL', name: 'Alphabet' },
+  { ticker: 'MSFT', name: 'Microsoft' },
+  { ticker: 'AMZN', name: 'Amazon' },
+  { ticker: 'FB', name: 'Facebook' },
+  { ticker: 'TSLA', name: 'Tesla' },
 ];
 
-function randomValue(min = 0, max = 1, precision = 0) {
-  const random = Math.random() * (max - min) + min;
-  return random.toFixed(precision);
+function randomFloatValue(min, max, precision) {
+  return parseFloat((Math.random() * (max - min + 1) + min).toFixed(precision));
 }
 
 function utcDate() {
   const now = new Date();
-  return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+  return new Date(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(),
+    now.getUTCHours(),
+    now.getUTCMinutes(),
+    now.getUTCSeconds()
+  );
 }
 
 function getQuotes(socket) {
-  const quotes = tickers.map(ticker => ({
-    ticker,
-    exchange: 'NASDAQ',
-    price: randomValue(100, 300, 2),
-    change: randomValue(0, 200, 2),
-    change_percent: randomValue(0, 1, 2),
-    dividend: randomValue(0, 1, 2),
-    yield: randomValue(0, 2, 2),
-    last_trade_time: utcDate(),
-  }));
+  const quotes = tickers.map(({ ticker, name }) => {
+    const currentPrice = randomFloatValue(100, 300, 2);
+    const priceChange = randomFloatValue(
+      PRICE_CHANGE_RANGE,
+      -PRICE_CHANGE_RANGE,
+      2
+    );
+    const newPrice = currentPrice + priceChange;
+
+    return {
+      ticker,
+      name,
+      exchange: 'NASDAQ',
+      price: newPrice.toFixed(2),
+      change: priceChange,
+      change_percent: ((priceChange / currentPrice) * 100).toFixed(2),
+      dividend: randomFloatValue(0, 1, 2),
+      yield: randomFloatValue(0, 2, 2),
+      last_trade_time: utcDate(),
+    };
+  });
 
   socket.emit('ticker', quotes);
 }
@@ -48,11 +67,11 @@ function trackTickers(socket, interval) {
     clearInterval(clientTimers[socket.id]);
   }
 
-  clientTimers[socket.id] = setInterval(function() {
+  clientTimers[socket.id] = setInterval(function () {
     getQuotes(socket);
   }, interval);
 
-  socket.on('disconnect', function() {
+  socket.on('disconnect', function () {
     if (clientTimers[socket.id]) {
       clearInterval(clientTimers[socket.id]);
       delete clientTimers[socket.id];
@@ -68,17 +87,17 @@ const server = http.createServer(app);
 
 const socketServer = io(server, {
   cors: {
-    origin: "*",
-  }
+    origin: '*',
+  },
 });
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
 socketServer.on('connection', (socket) => {
   socket.on('start', () => {
-    trackTickers(socket, FETCH_INTERVAL);
+    trackTickers(socket, DEFAULT_FETCH_INTERVAL);
   });
 
   socket.on('changeInterval', (newInterval) => {
