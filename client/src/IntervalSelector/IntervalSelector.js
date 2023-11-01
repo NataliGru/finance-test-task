@@ -1,39 +1,55 @@
-import { useState } from 'react';
+import React from 'react';
 import { useTickerContext } from '../Context/TickerContext';
 import { intervals } from '../intervals';
-
 import './IntervalSelector.scss';
 
 export const IntervalSelector = () => {
-  const { selectedInterval, handleChangeInterval} = useTickerContext();
+  const {
+    selectedInterval,
+    handleChangeInterval,
+    isActiveSelector,
+    setIsActiveSelector,
+  } = useTickerContext();
 
-  const [newInterval, setNewInterval] = useState(selectedInterval);
+  const handleIntervalSelection = (interval) => {
+    handleChangeInterval(interval);
+    setIsActiveSelector(false);
+  };
 
-  const handleClick = () => {
-    (selectedInterval !== newInterval) && (
-      handleChangeInterval(newInterval)
-    )
-  }
-  
+  const handleSelectorClick = () => {
+    setIsActiveSelector(!isActiveSelector);
+  };
+
+  const handleMouseLeave = () => {
+    setIsActiveSelector(false);
+  };
+
   return (
-    <div className='container'>
-      <label className='label'>Select interval:</label>
-      <div className='select is-success'>
-        <select
-          value={selectedInterval}
-          onChange={(e) => setNewInterval(parseInt(e.target.value))}
-        >
-          {intervals.map((interval) => (
-            <option key={interval.value} value={interval.value} className='select-option'>
-              {interval.label}
-            </option>
-          ))}
-        </select>
+    <div className='selector-container'>
+      <label className='selector-label'>Select interval:</label>
+      <div
+        className={`custom-select ${isActiveSelector ? 'active' : ''}`}
+        onClick={handleSelectorClick}
+        onMouseLeave={handleMouseLeave}
+      >
+        <span className='select-value'>
+          {selectedInterval.label}
+          <i className='fas fa-angle-down' aria-hidden='true'></i>
+        </span>
+        <ul className='options'>
+          {intervals.map(
+            (interval) =>
+              selectedInterval.label !== interval.label && (
+                <li
+                  key={interval.value}
+                  onClick={() => handleIntervalSelection(interval)}
+                >
+                  {interval.label}
+                </li>
+              )
+          )}
+        </ul>
       </div>
-
-      <button className='button is-outlined' onClick={handleClick}>
-        Change
-      </button>
     </div>
   );
 };
