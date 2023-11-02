@@ -3,14 +3,15 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
-  width: 30%;
+  width: 200px;
   text-align: center;
 }
 
 .selector-label {
   font-weight: bold;
   font-size: 16px;
-  color: black;
+  color: #fff;
+  margin-bottom: 10px;
 }
 
 .custom-select {
@@ -18,10 +19,11 @@
   position: relative;
   display: inline-block;
   cursor: pointer;
+  background-color:  #023783;
   border: 1px solid lightgray;
   border-radius: 5px;
   padding: 10px;
-  color: black;
+  color: #fff;
   text-align: center;
   font-size: 14px;
   transition: all 0.3s;
@@ -45,7 +47,7 @@
   top: 100%;
   width: 100%;
   left: 0;
-  background-color: #fff;
+  background-color: #023783;
   border-radius: 5px;
   list-style: none;
   margin: 0;
@@ -63,7 +65,7 @@
 }
 
 .custom-select .options li:hover {
-  background-color: #AADCA1;
+  background-color: rgba(255,255,255, 50%);
   font-weight: 700;
 }
 

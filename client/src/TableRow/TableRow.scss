@@ -1,14 +1,15 @@
 .table-row {
   background-color: transparent;
+  text-align: center;
   transition: all 0.3s ease;
 }
 
 .table-row:hover {
-  background-color: #E4E4E4;
+  background-color: rgba(88,123,173, 50%);
 }
 
 .table-row td {
-  width: 100px;
+  width: 90px;
   overflow: hidden;
 }
 
@@ -17,6 +18,17 @@
   border-radius: 5px;
   text-align: center;
   font-weight: bold;
+}
+
+.favorites {
+  background-color: transparent;
+  border: none;
+  color: #fff;
+}
+
+.fav {
+  height: 25px;
+  width: 25px;
 }
 
 .cell{
