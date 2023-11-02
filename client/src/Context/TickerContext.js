@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import io from 'socket.io-client';
 import { intervals } from '../intervals';
 
 const TickerContext = createContext();
-const socket = io('http://localhost:4000');
 
 export const useTickerContext = () => {
   return useContext(TickerContext);
@@ -11,45 +11,41 @@ export const useTickerContext = () => {
 
 export const TickerProvider = ({ children }) => {
   const [tickerData, setTickerData] = useState([]);
-  const [selectedInterval, setSelectedInterval] = useState(intervals[0].value);
-  const [isAnimated, setIsAnimated] = useState(false);
+  const [selectedInterval, setSelectedInterval] = useState(intervals[0]);
+  const [isActiveSelector, setIsActiveSelector] = useState(false);
+
+
+  const socket = io('http://localhost:4000');
+
+  socket.on('ticker', (data) => {
+    setTickerData(data);
+  });
 
   useEffect(() => {
-    socket.on('ticker', (data) => {
-      setIsAnimated(true);
-      setTickerData(data);
-    });
-
     socket.emit('start');
 
     return () => {
       socket.off('ticker');
-      socket.off('updateInterval');
+      socket.off('changeInterval');
     };
   }, []);
 
-  useEffect(() => {
-    const animationTimeout = setTimeout(() => {
-      setIsAnimated(false);
-    }, selectedInterval / 2);
-
-    return () => clearTimeout(animationTimeout);
-  }, [tickerData, selectedInterval]);
-
-  const handleChangeInterval = (newInterval) => {
-    setSelectedInterval(newInterval);
-
-    socket.emit('changeInterval', selectedInterval);
+  const changeInterval = (newInterval) => {
+    socket.emit('changeInterval', newInterval.value);
   };
 
   const contextValue = {
     tickerData,
     selectedInterval,
-    handleChangeInterval,
-    isAnimated,
+    setSelectedInterval,
+    changeInterval,
+    isActiveSelector,
+    setIsActiveSelector,
   };
 
   return (
-    <TickerContext.Provider value={contextValue}>{children}</TickerContext.Provider>
+    <TickerContext.Provider value={contextValue}>
+      {children}
+    </TickerContext.Provider>
   );
 };

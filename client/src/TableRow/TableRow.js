@@ -1,24 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './TableRow.scss';
-import { useTickerContext } from '../Context/TickerContext';
 
 export const TableRow = ({ ticker }) => {
-  const { isAnimated } = useTickerContext();
+  const [changedFields, setChangedFields] = useState({});
 
-  const cellClassName = isAnimated ? 'animated' : '';
+  useEffect(() => {
+    const fieldsToCheck = ['price', 'change', 'change_percent', 'dividend', 'yield'];
+
+    const changes = {};
+    fieldsToCheck.forEach((field) => {
+      if (ticker[field] !== changedFields[field]) {
+        changes[field] = true;
+      }
+    });
+
+    setChangedFields(changes);
+
+    setTimeout(() => {
+      setChangedFields({});
+    }, 500);
+  }, [ticker]);
+
+  const renderCellWithAnimation = (fieldName) => {
+    const isChanged = changedFields[fieldName];
+    const cellClassName = isChanged ? 'animated' : '';
+
+    return (
+      <td className={cellClassName}>{ticker[fieldName]}</td>
+    );
+  };
 
   return (
     <tr className='table-row'>
-      <td >
+      <td>
         <div className='ticker'>{ticker.ticker}</div>
       </td>
       <td>{ticker.name}</td>
-      <td >{ticker.exchange}</td>
-      <td className={cellClassName}>{ticker.price}</td>
-      <td className={cellClassName}>{ticker.change}</td>
-      <td className={cellClassName}>{Math.abs(ticker.change_percent)}</td>
-      <td className={cellClassName}>{ticker.dividend}</td>
-      <td className={cellClassName}>{ticker.yield}</td>
+      <td>{ticker.exchange}</td>
+      {renderCellWithAnimation('price')}
+      {renderCellWithAnimation('change')}
+      {renderCellWithAnimation('change_percent')}
+      {renderCellWithAnimation('dividend')}
+      {renderCellWithAnimation('yield')}
     </tr>
   );
 };

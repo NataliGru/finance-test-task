@@ -6,13 +6,15 @@ import './IntervalSelector.scss';
 export const IntervalSelector = () => {
   const {
     selectedInterval,
-    handleChangeInterval,
+    setSelectedInterval,
+    changeInterval,
     isActiveSelector,
     setIsActiveSelector,
   } = useTickerContext();
 
-  const handleIntervalSelection = (interval) => {
-    handleChangeInterval(interval);
+  const handleIntervalSelection = (newInterval) => {
+    setSelectedInterval(newInterval);
+    changeInterval(newInterval);
     setIsActiveSelector(false);
   };
 
@@ -32,14 +34,12 @@ export const IntervalSelector = () => {
         onClick={handleSelectorClick}
         onMouseLeave={handleMouseLeave}
       >
-        <span className='select-value'>
-          {selectedInterval.label}
+        <span className='select-value'>{selectedInterval.label}
           <i className='fas fa-angle-down' aria-hidden='true'></i>
         </span>
         <ul className='options'>
           {intervals.map(
             (interval) =>
-              selectedInterval.label !== interval.label && (
                 <li
                   key={interval.value}
                   onClick={() => handleIntervalSelection(interval)}
@@ -47,7 +47,7 @@ export const IntervalSelector = () => {
                   {interval.label}
                 </li>
               )
-          )}
+          }
         </ul>
       </div>
     </div>
