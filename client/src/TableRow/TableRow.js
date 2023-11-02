@@ -36,7 +36,7 @@ export const TableRow = ({ ticker, color }) => {
 
     if (ticker.change < 0) {
       style = { backgroundColor: "rgba(232,104,104, 30%)", color: '#B95353' }
-    arrow = '↓'
+      arrow = '↓'
     }
 
     return (

@@ -1,6 +1,13 @@
 .header {
-  padding-block: 15px;
+  padding-block: 20px;
   margin-bottom: 20px;
   text-align: center;
-  background-color: #AFE1AF;
+  background-image: url(../img/banner.jpg);
+  background-position: center;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 50px;
+  text-shadow: 5px 5px 5px #fff;
 }
