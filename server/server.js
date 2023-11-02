@@ -60,20 +60,20 @@ function getQuotes(socket) {
   socket.emit('ticker', quotes);
 }
 
-let clientTimer;
+let clientCurrentInterval;
 
 function trackTickers(socket, interval) {
-  if (clientTimer) {
-    clearInterval(clientTimer);
+  if (clientCurrentInterval) {
+    clearInterval(clientCurrentInterval);
   }
   
-  clientTimer = setInterval(function () {
+  clientCurrentInterval = setInterval(function () {
     getQuotes(socket);
   }, interval);
   
   socket.on('disconnect', function () {
-    if (clientTimer) {
-      clearInterval(clientTimer);
+    if (clientCurrentInterval) {
+      clearInterval(clientCurrentInterval);
     }
   });
 
