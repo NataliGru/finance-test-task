@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTickerContext } from '../Context/TickerContext';
-import { intervals } from '../intervals';
+import { intervals } from '../utils/intervals';
 import './IntervalSelector.scss';
 
 export const IntervalSelector = () => {
@@ -34,20 +34,19 @@ export const IntervalSelector = () => {
         onClick={handleSelectorClick}
         onMouseLeave={handleMouseLeave}
       >
-        <span className='select-value'>{selectedInterval.label}
+        <span className='select-value'>
+          {selectedInterval.label}
           <i className='fas fa-angle-down' aria-hidden='true'></i>
         </span>
         <ul className='options'>
-          {intervals.map(
-            (interval) =>
-                <li
-                  key={interval.value}
-                  onClick={() => handleIntervalSelection(interval)}
-                >
-                  {interval.label}
-                </li>
-              )
-          }
+          {intervals.map((interval) => (
+            <li
+              key={interval.value}
+              onClick={() => handleIntervalSelection(interval)}
+            >
+              {interval.label}
+            </li>
+          ))}
         </ul>
       </div>
     </div>

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import io from 'socket.io-client';
-import { intervals } from '../intervals';
+import { intervals } from '../utils/intervals';
 
 const TickerContext = createContext();
 
@@ -13,7 +13,6 @@ export const TickerProvider = ({ children }) => {
   const [tickerData, setTickerData] = useState([]);
   const [selectedInterval, setSelectedInterval] = useState(intervals[0]);
   const [isActiveSelector, setIsActiveSelector] = useState(false);
-
 
   const socket = io('http://localhost:4000');
 

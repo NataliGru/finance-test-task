@@ -4,7 +4,7 @@
 }
 
 .table-row:hover {
-  background-color: #AFE1AF;
+  background-color: #E4E4E4;
 }
 
 .table-row td {
@@ -13,12 +13,16 @@
 }
 
 .ticker {
-  border: 1px solid black;
-  background-color: darkgreen;
   color: #fff;
   border-radius: 5px;
   text-align: center;
   font-weight: bold;
+}
+
+.cell{
+  padding-inline: 10px;
+  border-radius: 5px;
+  text-align: center;
 }
 
 @keyframes changeNumber {
