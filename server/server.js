@@ -60,21 +60,20 @@ function getQuotes(socket) {
   socket.emit('ticker', quotes);
 }
 
-const clientTimers = {};
+let clientTimer;
 
 function trackTickers(socket, interval) {
-  if (clientTimers[socket.id]) {
-    clearInterval(clientTimers[socket.id]);
+  if (clientTimer) {
+    clearInterval(clientTimer);
   }
-
-  clientTimers[socket.id] = setInterval(function () {
+  
+  clientTimer = setInterval(function () {
     getQuotes(socket);
   }, interval);
-
+  
   socket.on('disconnect', function () {
-    if (clientTimers[socket.id]) {
-      clearInterval(clientTimers[socket.id]);
-      delete clientTimers[socket.id];
+    if (clientTimer) {
+      clearInterval(clientTimer);
     }
   });
 
@@ -99,10 +98,10 @@ socketServer.on('connection', (socket) => {
   socket.on('start', () => {
     trackTickers(socket, DEFAULT_FETCH_INTERVAL);
   });
-
+  
   socket.on('changeInterval', (newInterval) => {
     trackTickers(socket, newInterval);
-  });
+  });  
 });
 
 server.listen(PORT, () => {
