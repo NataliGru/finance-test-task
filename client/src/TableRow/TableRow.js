@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import './TableRow.scss';
 import {
@@ -43,7 +44,7 @@ export const TableRow = ({ ticker, color }) => {
     setTimeout(() => {
       setChangedFields({});
     }, 500);
-  }, []);
+  }, [ticker]);
 
   const renderCellWithAnimation = (fieldName) => {
     const isChanged = changedFields[fieldName];
