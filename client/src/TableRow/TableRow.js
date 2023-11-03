@@ -43,7 +43,7 @@ export const TableRow = ({ ticker, color }) => {
     setTimeout(() => {
       setChangedFields({});
     }, 500);
-  }, [ticker]);
+  }, []);
 
   const renderCellWithAnimation = (fieldName) => {
     const isChanged = changedFields[fieldName];
@@ -73,7 +73,7 @@ export const TableRow = ({ ticker, color }) => {
   };
 
   return (
-    <tr className='table-row'>
+    <tr className="ticker-row">
       <td>
         <div className='ticker' style={{ backgroundColor: color }}>
           {ticker.ticker}
@@ -89,7 +89,7 @@ export const TableRow = ({ ticker, color }) => {
       <td>
         <button className='favorites' onClick={handleToggleFavorite}>
           {isToggled ? (
-            <img className='fav' src={starSolid} alt="not-Favorites" />
+            <img className='fav' src={starSolid} alt="Favorites" />
           ) : (
             <img className='fav' src={starRegular} alt="not-Favorites" />
           )}

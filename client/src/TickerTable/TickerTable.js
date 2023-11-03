@@ -10,19 +10,22 @@ import './TickerTable.scss';
 export const TickerTable = () => {
   const { tickerData } = useTickerContext();
 
+
   return (
     <div className="table-container">
       <table className="table">
         <thead className='thead'> 
-          <td>Ticker</td>
-          <td>Company</td>
-          <td>Exchange</td>
-          <td>Price</td>
-          <td>Change</td>
-          <td>Percent</td>
-          <td>Dividend</td>
-          <td>Yield</td>
-          <td>Action</td>
+          <tr>
+          <th>Ticker</th>
+          <th>Company</th>
+          <th>Exchange</th>
+          <th>Price</th>
+          <th>Change</th>
+          <th>Percent</th>
+          <th>Dividend</th>
+          <th>Yield</th>
+          <th>Action</th>
+          </tr>
         </thead>
         <tbody>
             {tickerData.map((ticker, index) => (
